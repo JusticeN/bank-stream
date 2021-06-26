@@ -1,9 +1,12 @@
 package com.db.frontoffice.dto;
 
+import com.db.frontoffice.dto.serializer.LocalDateDeserializer;
 import com.db.frontoffice.dto.serializer.LocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -34,26 +37,49 @@ public class TradeDto implements Serializable {
     private String bookId;
     @NotNull(message = MATURITY_DATE_ID_NOT_EMPTY_MESSAGE)
     @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate maturityDate;
     @NotNull(message = CREATED_DATE_ID_NOT_EMPTY_MESSAGE)
     @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate createdDate;
     @NotNull(message = EXPIRED_DATE_ID_NOT_EMPTY_MESSAGE)
     private ExpiredEnum expired;
 
-    public boolean hasTradeID() { return Objects.nonNull(tradeId); }
-    public boolean hasVersion() { return Objects.nonNull(version); }
-    public boolean hasCounterPartyId() { return Objects.nonNull(counterPartyId); }
-    public boolean hasBookId() { return Objects.nonNull(bookId); }
-    public boolean hasMaturityDate() { return Objects.nonNull(maturityDate); }
-    public boolean hasCreatedDate() { return Objects.nonNull(createdDate); }
-    public boolean hasExpired() { return Objects.nonNull(expired); }
+    public boolean hasTradeID() {
+        return Objects.nonNull(tradeId);
+    }
+
+    public boolean hasVersion() {
+        return Objects.nonNull(version);
+    }
+
+    public boolean hasCounterPartyId() {
+        return Objects.nonNull(counterPartyId);
+    }
+
+    public boolean hasBookId() {
+        return Objects.nonNull(bookId);
+    }
+
+    public boolean hasMaturityDate() {
+        return Objects.nonNull(maturityDate);
+    }
+
+    public boolean hasCreatedDate() {
+        return Objects.nonNull(createdDate);
+    }
+
+    public boolean hasExpired() {
+        return Objects.nonNull(expired);
+    }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public enum ExpiredEnum {
         Y('Y'),
         N('N');
         private Character character;
+
         ExpiredEnum(Character character) {
             this.character = character;
         }

@@ -36,9 +36,9 @@ class TradeServiceTest {
                 "\"version\":12," +
                 "\"counterPartyId\":\"1\"," +
                 "\"bookId\":\"1\"," +
-                "\"maturityDate\":\"2021-01-01\"," +
-                "\"createdDate\":\"2021-01-01\"," +
-                "\"expired\":\"Y\"" +
+                "\"maturityDate\":\"01/01/2021\"," +
+                "\"createdDate\":\"01/01/2021\"," +
+                "\"expired\":\"N\"" +
                 "}";
         assertEquals(expected, result);
     }

@@ -1,11 +1,9 @@
 package com.db.frontoffice.controller;
 
 import com.db.frontoffice.dto.TradeDto;
-import com.db.frontoffice.exception.FailledValidationException;
 import com.db.frontoffice.service.TradeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

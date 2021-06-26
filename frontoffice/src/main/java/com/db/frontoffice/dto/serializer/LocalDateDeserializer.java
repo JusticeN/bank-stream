@@ -1,4 +1,4 @@
-package com.db.backoffice.dto.serializer;
+package com.db.frontoffice.dto.serializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

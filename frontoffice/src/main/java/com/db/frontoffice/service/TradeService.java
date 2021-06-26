@@ -37,6 +37,7 @@ public class TradeService {
         Set<ConstraintViolation<TradeDto>> constraintViolations = validator.validate(tradeDto);
         return constraintViolations.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList());
     }
+
     public String convertObjectToJson(TradeDto tradeDto) {
         String msg = null;
         try {

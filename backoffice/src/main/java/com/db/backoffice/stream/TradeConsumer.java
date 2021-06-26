@@ -1,6 +1,5 @@
 package com.db.backoffice.stream;
 
-import com.db.backoffice.config.ConsumerKafkaConfig;
 import com.db.backoffice.dto.TradeDto;
 import com.db.backoffice.mapper.TradeMapper;
 import com.db.backoffice.model.TradeModel;
@@ -29,7 +28,7 @@ public class TradeConsumer {
 
     @KafkaHandler(isDefault = true)
     public void listenToTopicAsStringAndSaveToDatabase(String data) {
-        log.info("#Received Message foo: {}", data);
+        log.info("#Received Message: {}", data);
         TradeDto tradeDto;
         try {
             tradeDto = mapper.readValue(data, TradeDto.class);

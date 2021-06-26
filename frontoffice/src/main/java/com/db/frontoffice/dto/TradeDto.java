@@ -1,9 +1,11 @@
 package com.db.frontoffice.dto;
 
 import com.db.frontoffice.dto.serializer.LocalDateSerializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -12,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 @Builder
-public class TradeDto {
+public class TradeDto implements Serializable {
 
     public static final String TRADE_ID_NOT_EMPTY_MESSAGE = "tradeId should not be empty";
     public static final String VERSION_NOT_EMPTY_MESSAGE = "version should not be empty";
@@ -37,7 +39,7 @@ public class TradeDto {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate createdDate;
     @NotNull(message = EXPIRED_DATE_ID_NOT_EMPTY_MESSAGE)
-    private Character expired;
+    private ExpiredEnum expired;
 
     public boolean hasTradeID() { return Objects.nonNull(tradeId); }
     public boolean hasVersion() { return Objects.nonNull(version); }
@@ -46,4 +48,19 @@ public class TradeDto {
     public boolean hasMaturityDate() { return Objects.nonNull(maturityDate); }
     public boolean hasCreatedDate() { return Objects.nonNull(createdDate); }
     public boolean hasExpired() { return Objects.nonNull(expired); }
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    public enum ExpiredEnum {
+        Y('Y'),
+        N('N');
+        private Character character;
+        ExpiredEnum(Character character) {
+            this.character = character;
+        }
+
+        @Override
+        public String toString() {
+            return character.toString();
+        }
+    }
 }

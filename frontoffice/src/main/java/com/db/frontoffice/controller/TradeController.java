@@ -3,7 +3,7 @@ package com.db.frontoffice.controller;
 import com.db.frontoffice.dto.TradeDto;
 import com.db.frontoffice.exception.FailledValidationException;
 import com.db.frontoffice.service.TradeService;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,13 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Objects;
 
 @RestController
+@Slf4j
 public class TradeController {
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(TradeController.class);
-
     private final TradeService tradeService;
 
     @Autowired
@@ -29,19 +26,9 @@ public class TradeController {
     @PostMapping(value = "/trade",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity receiveTrade(@RequestBody(required = false) TradeDto tradeDto) {
+    public ResponseEntity receiveTrade(@RequestBody TradeDto tradeDto) {
         log.info("receiveTrade: {}", tradeDto);
-        try {
-            Objects.requireNonNull(tradeDto, "Trade object is required");
-            tradeService.receiveTrade(tradeDto);
-        } catch (FailledValidationException exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-                    .body(exception.getErrorData());
-        } catch (NullPointerException nullPointerException) {
-            var messages = List.of(nullPointerException.getMessage());
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-                    .body(new FailledValidationException(messages).getErrorData());
-        }
+        tradeService.validateAndSendTradeToQueue(tradeDto);
         return ResponseEntity.accepted().build();
     }
 }

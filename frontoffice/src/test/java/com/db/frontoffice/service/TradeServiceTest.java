@@ -28,7 +28,7 @@ class TradeServiceTest {
                 .bookId("1")
                 .maturityDate(LocalDate.of(2021, 1, 1))
                 .createdDate(LocalDate.of(2021, 1, 1))
-                .expired('Y')
+                .expired(TradeDto.ExpiredEnum.N)
                 .build();
         String result = tradeService.convertObjectToJson(trade);
         String expected = "{" +
@@ -65,7 +65,7 @@ class TradeServiceTest {
                 .bookId("1")
                 .maturityDate(LocalDate.of(2021, 1, 1))
                 .createdDate(LocalDate.of(2021, 1, 1))
-                .expired('Y')
+                .expired(TradeDto.ExpiredEnum.Y)
                 .build();;
         List<String> tradeViolations = tradeService.validateTrade(tradeDto);
         checkTradeDto(tradeViolations, tradeDto);

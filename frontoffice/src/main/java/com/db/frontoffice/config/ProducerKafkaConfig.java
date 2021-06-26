@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfig {
+public class ProducerKafkaConfig {
     @Value(value = "${kafka.bootstrapAddress}")
     private String bootstrapAddress;
     @Value("${app.kafka.topic-name}")

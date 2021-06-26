@@ -4,6 +4,7 @@ import com.db.frontoffice.dto.TradeDto;
 import com.db.frontoffice.exception.FailledValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,10 +17,12 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TradeService {
 
     @Value("${app.kafka.topic-name}")
@@ -51,25 +54,23 @@ public class TradeService {
 
             @Override
             public void onSuccess(SendResult<String, String> result) {
-                System.out.println("Sent message=[" + msg +
-                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                log.info("Sent message=[ {} ] with offset=[ {}]", msg, result.getRecordMetadata().offset());
             }
             @Override
             public void onFailure(Throwable ex) {
-                System.out.println("Unable to send message=["
-                        + msg + "] due to : " + ex.getMessage());
+                log.info("Unable to send message=[ {}] due to : {}", msg, ex.getMessage());
             }
         });
     }
 
-    public void receiveTrade(TradeDto tradeDto) throws FailledValidationException {
+    public void validateAndSendTradeToQueue(TradeDto tradeDto) throws FailledValidationException {
+        Objects.requireNonNull(tradeDto, "Trade object is required");
         List<String> violations = validateTrade(tradeDto);
         if (!violations.isEmpty()) {
             throw new FailledValidationException(violations);
         }
         var tradeDtoToJsonString = convertObjectToJson(tradeDto);
         sendMessage(tradeDtoToJsonString);
-
     }
 
 }

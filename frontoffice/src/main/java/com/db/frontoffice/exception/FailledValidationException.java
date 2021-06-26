@@ -1,17 +1,16 @@
 package com.db.frontoffice.exception;
 
-import lombok.Builder;
-import lombok.Data;
+import com.db.frontoffice.dto.ErrorDataDto;
 
 import java.util.List;
 
-public class FailledValidationException extends Exception {
+public class FailledValidationException extends RuntimeException {
 
-    private ErrorData errorData;
+    private ErrorDataDto errorData;
 
     public FailledValidationException(List<String> validationsErrorMessages) {
         super();
-        errorData = ErrorData.builder()
+        errorData = ErrorDataDto.builder()
                 .numberOfViolations(validationsErrorMessages.size())
                 .messages(validationsErrorMessages)
                 .build();
@@ -22,14 +21,8 @@ public class FailledValidationException extends Exception {
         return super.getMessage();
     }
 
-    public ErrorData getErrorData() {
+    public ErrorDataDto getErrorData() {
         return errorData;
     }
 
-    @Builder
-    @Data
-    private static class ErrorData {
-        private int numberOfViolations;
-        private List<String> messages;
-    }
 }

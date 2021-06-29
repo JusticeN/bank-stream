@@ -71,6 +71,27 @@ public class BackofficeApplicationTests {
         Assertions.assertTrue(savedTrades.size() == 0);
     }
 
+
+    @Test
+    public void testDuplicateTradeConsume() {
+        testKafkaProducer.send(topic, json);
+        sleepFor2Seconds();
+        sleepFor2Seconds();
+        var savedTrades = repository.findAll();
+        log.info("savedTrades: {}", savedTrades);
+        Assertions.assertFalse(savedTrades.isEmpty());
+        Assertions.assertTrue(savedTrades.size() == 1);
+        TradeModel tradeModel = savedTrades.get(0);
+        assertTrade(tradeModel);
+        // save the same trade again
+        testKafkaProducer.send(topic, json);
+        sleepFor2Seconds();
+        savedTrades = repository.findAll();
+        Assertions.assertTrue(savedTrades.size() == 1);
+        tradeModel = savedTrades.get(0);
+        assertTrade(tradeModel);
+    }
+
     private void sleepFor2Seconds() {
         try {
             Thread.sleep(2000);

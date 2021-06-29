@@ -2,6 +2,7 @@ package com.db.backoffice.stream;
 
 import com.db.backoffice.dto.TradeDto;
 import com.db.backoffice.mapper.TradeMapper;
+import com.db.backoffice.model.TradeID;
 import com.db.backoffice.model.TradeModel;
 import com.db.backoffice.repository.TradeRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TradeConsumer {
 
-    private final ObjectMapper mapper = new ObjectMapper();
     private final TradeRepository tradeRepository;
     private final TradeMapper tradeMapper;
 
@@ -26,20 +26,30 @@ public class TradeConsumer {
         this.tradeMapper = tradeMapper;
     }
 
-    @KafkaHandler(isDefault = true)
-    public void listenToTopicAsStringAndSaveToDatabase(String data) {
-        log.info("#Received Message: {}", data);
+    private TradeDto parseStringToTradeDto(String data) {
         TradeDto tradeDto;
         try {
+            final ObjectMapper mapper = new ObjectMapper();
             tradeDto = mapper.readValue(data, TradeDto.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            return null;
+        }
+        return tradeDto;
+    }
+
+    @KafkaHandler(isDefault = true)
+    public void listenToTopicAsStringAndSaveToDatabase(String data) {
+        log.info("#Received Message: {}", data);
+        TradeDto tradeDto = parseStringToTradeDto(data);
+        TradeModel trade = tradeMapper.tradeDtoToTradeModel(tradeDto);
+        TradeID tradeId = new TradeID(tradeDto.getTradeId(), trade.getVersion());
+        if(tradeRepository.existsById(tradeId)) {
+            log.info("Can not save duplicate Entity {}", trade);
             return;
         }
-        log.info("#converted Message tradeDto: {}", tradeDto);
-        TradeModel trade = tradeMapper.tradeDtoToTradeModel(tradeDto);
-        log.info("#converted Model trade: {}", trade);
         tradeRepository.save(trade);
+        log.info("#saved Model trade: {}", trade);
     }
 
 }

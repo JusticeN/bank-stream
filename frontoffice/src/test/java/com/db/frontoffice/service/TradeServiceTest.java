@@ -57,6 +57,7 @@ class TradeServiceTest {
         checkTradeDto(tradeViolationsOnlzTradeID, tradeDto);
     }
     @Test
+
     void validateTradeAllValid() {
         TradeDto tradeDto = TradeDto.builder()
                 .tradeId("16754432343")
